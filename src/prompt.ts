@@ -1,5 +1,39 @@
 import { loadIdentity } from "./identity.js";
 import { loadKnowledge } from "./knowledge.js";
+import { MEMORY_TYPES, listMemories } from "./memory.js";
+
+const MEMORY_GUIDANCE = `# Memory
+
+You have a long-term memory: tools save_memory, recall_memory, forget_memory.
+
+SAVE — the moment it appears, without being asked: decisions Neeraj makes
+(always with the reasoning: "chose X over Y because Z"), corrections he gives
+you, durable facts about him / his work / named people, his preferences, and
+references he uses. The body records the fact, why it matters, and how to
+apply it.
+
+DO NOT SAVE: transient task state, the current conversation itself, anything
+already in your core knowledge, small talk — and NEVER credentials, secrets,
+or credit-card/account numbers, even if asked.
+
+FORGET: only when Neeraj asks. First tell him exactly what would be deleted
+and get his explicit yes; only then call forget_memory with confirmed: true.
+
+RECALL: relevant memories are surfaced to you automatically each turn; use
+recall_memory yourself when past decisions, people, or project context might
+matter and nothing surfaced.`;
+
+function renderMemoryIndex(): string {
+  const memories = listMemories();
+  if (!memories.length) return `${MEMORY_GUIDANCE}\n\nYour memory is currently empty.`;
+  const lines = [MEMORY_GUIDANCE, "", "Everything you currently remember (hooks only — recall_memory for details):"];
+  for (const type of MEMORY_TYPES) {
+    const ofType = memories.filter((m) => m.type === type);
+    if (ofType.length)
+      lines.push(...ofType.map((m) => `- [${type}] ${m.hook} (id: ${m.name})`));
+  }
+  return lines.join("\n");
+}
 
 /**
  * Two-block prompt assembly.
@@ -22,6 +56,7 @@ export function buildStableBlock(): string {
   const sections = [
     identity,
     ...(knowledge ? [knowledge] : []),
+    renderMemoryIndex(),
     // Tier 8 will render the generated capability summary here.
   ];
   return sections.join("\n\n---\n\n");

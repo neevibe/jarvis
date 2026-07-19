@@ -9,14 +9,17 @@
     "verify:tier3": "tsx scripts/verify-tier3.ts",
     "verify:tier4": "tsx scripts/verify-tier4.ts seed && tsx scripts/verify-tier4.ts resume && JARVIS_WINDOW_MAX=4 JARVIS_WINDOW_KEEP=2 tsx scripts/verify-tier4.ts window",
     "verify:tier5": "tsx scripts/verify-tier5.ts",
-    "verify:tier6": "tsx scripts/verify-tier6.ts"
+    "verify:tier6": "tsx scripts/verify-tier6.ts",
+    "extract": "tsx scripts/extract.ts",
+    "verify:tier7": "tsx scripts/verify-tier7.ts teach && tsx scripts/verify-tier7.ts recall && tsx scripts/verify-tier7.ts extract && tsx scripts/verify-tier7.ts chatter && tsx scripts/verify-tier7.ts dedupe && tsx scripts/verify-tier7.ts forget && tsx scripts/verify-tier7.ts cleanup"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "^0.3.215"
+    "@anthropic-ai/claude-agent-sdk": "^0.3.215",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

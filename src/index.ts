@@ -1,6 +1,7 @@
 import readline from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { openSession, runTurn } from "./agent.js";
+import { extractSession } from "./extractor.js";
 
 const fresh = process.argv.includes("--new");
 const { meta, resumed } = openSession(fresh);
@@ -24,3 +25,12 @@ while (true) {
 }
 
 rl.close();
+
+if (meta.messages >= 4 && !meta.extracted) {
+  console.log("\nDistilling this session into long-term memory…");
+  const { saved, duplicatesSkipped, skipped } = await extractSession(meta);
+  if (skipped) console.log(`  (${skipped})`);
+  else if (!saved.length) console.log("  (nothing durable to keep)");
+  for (const m of saved) console.log(`  + remembered: ${m.hook}`);
+  if (duplicatesSkipped) console.log(`  (${duplicatesSkipped} near-duplicate${duplicatesSkipped > 1 ? "s" : ""} skipped)`);
+}

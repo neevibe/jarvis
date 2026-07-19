@@ -30,6 +30,8 @@ export interface SessionMeta {
   summary?: string;
   /** How many transcript messages the summary already covers. */
   summarizedThrough?: number;
+  /** True once the post-session memory extractor has processed this session. */
+  extracted?: boolean;
   /** True → nothing touches disk (used by verification scripts). */
   ephemeral?: boolean;
 }
@@ -57,6 +59,14 @@ export function createSession(ephemeral = false): SessionMeta {
 export function saveMeta(meta: SessionMeta): void {
   if (meta.ephemeral) return;
   writeFileSync(metaPath(meta.id), JSON.stringify(meta, null, 2) + "\n");
+}
+
+export function listSessions(): SessionMeta[] {
+  if (!existsSync(SESSIONS_DIR)) return [];
+  return readdirSync(SESSIONS_DIR)
+    .filter((d) => existsSync(metaPath(d)))
+    .sort()
+    .map((d) => JSON.parse(readFileSync(metaPath(d), "utf-8")) as SessionMeta);
 }
 
 export function latestSession(): SessionMeta | null {

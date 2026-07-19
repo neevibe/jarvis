@@ -1,5 +1,10 @@
 import { query } from "@anthropic-ai/claude-agent-sdk";
+import { loadBriefing } from "./extractor.js";
+import { complete } from "./llm.js";
+import { readMemory } from "./memory.js";
 import { buildStableBlock, buildDynamicBlock } from "./prompt.js";
+import { recall } from "./recall.js";
+import { MEMORY_TOOL_NAMES, memoryServer } from "./tools.js";
 import {
   type SessionMeta,
   allTurns,
@@ -55,8 +60,8 @@ async function exec(
     prompt,
     options: {
       systemPrompt: buildStableBlock(),
-      // Pure brain for now — no tools until the memory tiers add them.
-      allowedTools: [],
+      mcpServers: { memory: memoryServer },
+      allowedTools: MEMORY_TOOL_NAMES,
       ...(resume ? { resume } : {}),
     },
   });
@@ -84,25 +89,27 @@ async function exec(
 }
 
 async function summarize(text: string): Promise<string> {
-  const q = query({
-    prompt: `Compress this conversation transcript. Preserve decisions (and why), facts, names, numbers, and open threads. Drop pleasantries. Output only the summary.\n\n${text}`,
-    options: {
-      model: "haiku",
-      allowedTools: [],
-      systemPrompt:
-        "You compress conversation transcripts into dense, faithful summaries.",
-      maxTurns: 1,
-    },
+  return complete(
+    `Compress this conversation transcript. Preserve decisions (and why), facts, names, numbers, and open threads. Drop pleasantries. Output only the summary.\n\n${text}`,
+    { system: "You compress conversation transcripts into dense, faithful summaries." },
+  );
+}
+
+/** Local keyword recall, surfaced into the turn automatically — the "never re-brief me" mechanism. */
+async function recalledContext(userText: string): Promise<string | null> {
+  const hits = (await recall(userText, { limit: 3 })).filter((h) => h.score >= 4);
+  if (!hits.length) return null;
+  const rendered = hits.map((h) => {
+    const body = readMemory(h.name)?.body ?? "";
+    return `[${h.type}] ${h.hook} (id: ${h.name})\n${body.slice(0, 500)}`;
   });
-  let out = "";
-  for await (const msg of q) {
-    if (msg.type === "assistant") {
-      for (const block of msg.message.content) {
-        if (block.type === "text") out += block.text;
-      }
-    }
-  }
-  return out.trim();
+  return [
+    "<recalled-memories>",
+    "Surfaced from your long-term memory as possibly relevant (use recall_memory for more):",
+    "",
+    rendered.join("\n\n"),
+    "</recalled-memories>",
+  ].join("\n");
 }
 
 function renderTurns(turns: ReturnType<typeof allTurns>): string {
@@ -149,10 +156,20 @@ export async function runTurn(
   appendTurn(meta, "user", userText);
   const reseeded = await boundWindow(meta);
 
+  const extras: string[] = [];
+  if (meta.messages === 1) {
+    const briefing = loadBriefing();
+    if (briefing)
+      extras.push(`<standing-briefing>\nWhere things stand, from your last sessions:\n\n${briefing}\n</standing-briefing>`);
+  }
+  const recalled = await recalledContext(userText);
+  if (recalled) extras.push(recalled);
+
   const needsContext = reseeded || (!meta.sdkSessionId && meta.messages > 1);
   const prompt = [
     buildDynamicBlock(),
     ...(needsContext ? [sessionContext(meta, 1)] : []),
+    ...extras,
     userText,
   ].join("\n\n");
 
