@@ -42,7 +42,7 @@ CLI (`claude /login`) — the SDK reuses its credentials.
 Building in public, one verified tier at a time:
 
 - [x] **Tier 1 — Living identity file** (edit mid-run, next reply reflects it)
-- [ ] Tier 2 — Two-block cached system prompt
+- [x] **Tier 2 — Two-block cached system prompt** (identity cached & resident every turn; dynamic state stays fresh)
 - [ ] Tier 3 — Core knowledge, always loaded
 - [ ] Tier 4 — Working memory that survives restarts
 - [ ] Tier 5 — Long-term memory store
