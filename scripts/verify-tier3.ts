@@ -6,12 +6,13 @@
  * directly, without asking. The fact used: GitHub username + work email,
  * which live in knowledge/me.md and nowhere in the identity file.
  */
-import { runTurn, resetSession } from "../src/agent.js";
+import { openEphemeralSession, runTurn } from "../src/agent.js";
 
-resetSession();
+const session = openEphemeralSession();
 
 console.log("— Fresh session; asking a knowledge-only question —");
 const t = await runTurn(
+  session,
   "What is my GitHub username, and what's my work email? One line, no questions back.",
 );
 console.log(`reply: ${t.text.trim()}\n`);

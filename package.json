@@ -6,7 +6,8 @@
     "chat": "tsx src/index.ts",
     "verify:tier1": "tsx scripts/verify-tier1.ts",
     "verify:tier2": "tsx scripts/verify-tier2.ts",
-    "verify:tier3": "tsx scripts/verify-tier3.ts"
+    "verify:tier3": "tsx scripts/verify-tier3.ts",
+    "verify:tier4": "tsx scripts/verify-tier4.ts seed && tsx scripts/verify-tier4.ts resume && JARVIS_WINDOW_MAX=4 JARVIS_WINDOW_KEEP=2 tsx scripts/verify-tier4.ts window"
   },
   "keywords": [],
   "author": "",

@@ -7,19 +7,21 @@
  *    stable block (the full identity) is served from prompt cache rather than
  *    re-billed, while still being present in full on every turn.
  */
-import { runTurn } from "../src/agent.js";
+import { openEphemeralSession, runTurn } from "../src/agent.js";
+
+const session = openEphemeralSession();
 
 const ask = "What is the current time, to the second? Reply with only the time.";
 
 console.log("— Turn 1 —");
-const t1 = await runTurn(ask);
+const t1 = await runTurn(session, ask);
 console.log(`reply: ${t1.text.trim()}`);
 console.log(`usage: input=${t1.usage?.inputTokens} cacheWrite=${t1.usage?.cacheCreationTokens} cacheRead=${t1.usage?.cacheReadTokens}\n`);
 
 await new Promise((r) => setTimeout(r, 3000));
 
 console.log("— Turn 2 (3s later, same session) —");
-const t2 = await runTurn(ask);
+const t2 = await runTurn(session, ask);
 console.log(`reply: ${t2.text.trim()}`);
 console.log(`usage: input=${t2.usage?.inputTokens} cacheWrite=${t2.usage?.cacheCreationTokens} cacheRead=${t2.usage?.cacheReadTokens}\n`);
 

@@ -8,7 +8,9 @@
  * 4. Restore the identity file exactly as it was.
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { runTurn } from "../src/agent.js";
+import { openEphemeralSession, runTurn } from "../src/agent.js";
+
+const session = openEphemeralSession();
 import { IDENTITY_PATH } from "../src/identity.js";
 
 const MARKER = "EDIT-LIVE-7";
@@ -16,7 +18,7 @@ const original = readFileSync(IDENTITY_PATH, "utf-8");
 
 try {
   console.log("— Turn 1 (original identity) —");
-  const t1 = await runTurn("In one sentence: who are you and whose twin are you?");
+  const t1 = await runTurn(session, "In one sentence: who are you and whose twin are you?");
   console.log(t1.text, "\n");
 
   console.log(`— Editing identity mid-run: adding rule to end replies with "${MARKER}" —\n`);
@@ -27,7 +29,7 @@ try {
   );
 
   console.log("— Turn 2 (same process, no restart) —");
-  const t2 = await runTurn("Say hello in one short sentence.");
+  const t2 = await runTurn(session, "Say hello in one short sentence.");
   console.log(t2.text, "\n");
 
   const pass = t2.text.includes(MARKER);

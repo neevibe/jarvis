@@ -44,7 +44,7 @@ Building in public, one verified tier at a time:
 - [x] **Tier 1 — Living identity file** (edit mid-run, next reply reflects it)
 - [x] **Tier 2 — Two-block cached system prompt** (identity cached & resident every turn; dynamic state stays fresh)
 - [x] **Tier 3 — Core knowledge, always loaded** (answers from curated facts it was never told in-session)
-- [ ] Tier 4 — Working memory that survives restarts
+- [x] **Tier 4 — Working memory that survives restarts** (resume across processes; bounded window with rolling summary)
 - [ ] Tier 5 — Long-term memory store
 - [ ] Tier 6 — Recall (keyword-first, semantic-ready)
 - [ ] Tier 7 — Memory tools + automatic extractor
