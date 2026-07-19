@@ -45,7 +45,7 @@ Building in public, one verified tier at a time:
 - [x] **Tier 2 — Two-block cached system prompt** (identity cached & resident every turn; dynamic state stays fresh)
 - [x] **Tier 3 — Core knowledge, always loaded** (answers from curated facts it was never told in-session)
 - [x] **Tier 4 — Working memory that survives restarts** (resume across processes; bounded window with rolling summary)
-- [ ] Tier 5 — Long-term memory store
+- [x] **Tier 5 — Long-term memory store** (typed markdown files, human-editable, derived index)
 - [ ] Tier 6 — Recall (keyword-first, semantic-ready)
 - [ ] Tier 7 — Memory tools + automatic extractor
 - [ ] Tier 8 — Self-knowledge

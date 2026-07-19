@@ -10,6 +10,7 @@ knowledge/*
 
 memory/*
 !memory/.gitkeep
+!memory/*.example.md
 
 sessions/*
 !sessions/.gitkeep
