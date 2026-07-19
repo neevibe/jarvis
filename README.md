@@ -49,4 +49,6 @@ Building in public, one verified tier at a time:
 - [x] **Tier 6 — Recall (keyword-first, semantic-ready)** (local search; disposable self-healing index)
 - [x] **Tier 7 — Memory tools + automatic extractor** (saves decisions on its own; recalls them in fresh sessions; dedupes; skips chatter)
 - [x] **Tier 8 — Self-knowledge** (capability list generated from the registered tools; declines what it can't do)
-- [ ] Tier 9 — Personality checkpoint against drift
+- [x] **Tier 9 — Personality checkpoint against drift** (self-audit past 25 exchanges; absent from short chats)
+
+**The brain is complete.** Next phases: voice (streaming STT/TTS, designed pre-smoothed), BIAL data integration, email.

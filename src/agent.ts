@@ -23,6 +23,26 @@ import {
 const WINDOW_MAX_MESSAGES = Number(process.env.JARVIS_WINDOW_MAX ?? 120);
 const KEEP_MESSAGES = Number(process.env.JARVIS_WINDOW_KEEP ?? 10);
 
+/**
+ * Personality checkpoint (Tier 9): once a conversation is deep enough that a
+ * model starts imitating its own recent replies instead of its identity, a
+ * short self-audit rides in the dynamic block. Measured in persisted
+ * messages: 50 ≈ 25 exchanges.
+ */
+const CHECKPOINT_AFTER_MESSAGES = Number(
+  process.env.JARVIS_CHECKPOINT_AFTER ?? 50,
+);
+
+const PERSONALITY_CHECKPOINT = [
+  "<personality-checkpoint>",
+  "This conversation is now deep enough that voices drift. Before you answer,",
+  "check your draft against identity/jarvis.md on two axes: (1) length — lead",
+  "with the answer, no preamble, no padding; (2) voice — is this unmistakably",
+  "you, or has it slid into generic-assistant hedging? If it could have come",
+  "from any chatbot, rewrite it before sending.",
+  "</personality-checkpoint>",
+].join("\n");
+
 export interface TurnUsage {
   inputTokens: number;
   cacheCreationTokens: number;
@@ -149,13 +169,15 @@ async function boundWindow(meta: SessionMeta): Promise<boolean> {
   return true;
 }
 
-export async function runTurn(
+/**
+ * Per-turn additions to the dynamic side of the prompt: the standing
+ * briefing (first turn only), auto-recalled memories, and — deep into a
+ * conversation — the personality checkpoint. Exported for verification.
+ */
+export async function composeExtras(
   meta: SessionMeta,
   userText: string,
-): Promise<TurnResult> {
-  appendTurn(meta, "user", userText);
-  const reseeded = await boundWindow(meta);
-
+): Promise<string[]> {
   const extras: string[] = [];
   if (meta.messages === 1) {
     const briefing = loadBriefing();
@@ -164,7 +186,18 @@ export async function runTurn(
   }
   const recalled = await recalledContext(userText);
   if (recalled) extras.push(recalled);
+  if (meta.messages >= CHECKPOINT_AFTER_MESSAGES)
+    extras.push(PERSONALITY_CHECKPOINT);
+  return extras;
+}
 
+export async function runTurn(
+  meta: SessionMeta,
+  userText: string,
+): Promise<TurnResult> {
+  appendTurn(meta, "user", userText);
+  const reseeded = await boundWindow(meta);
+  const extras = await composeExtras(meta, userText);
   const needsContext = reseeded || (!meta.sdkSessionId && meta.messages > 1);
   const prompt = [
     buildDynamicBlock(),
