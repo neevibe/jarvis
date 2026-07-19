@@ -46,7 +46,7 @@ Building in public, one verified tier at a time:
 - [x] **Tier 3 — Core knowledge, always loaded** (answers from curated facts it was never told in-session)
 - [x] **Tier 4 — Working memory that survives restarts** (resume across processes; bounded window with rolling summary)
 - [x] **Tier 5 — Long-term memory store** (typed markdown files, human-editable, derived index)
-- [ ] Tier 6 — Recall (keyword-first, semantic-ready)
+- [x] **Tier 6 — Recall (keyword-first, semantic-ready)** (local search; disposable self-healing index)
 - [ ] Tier 7 — Memory tools + automatic extractor
 - [ ] Tier 8 — Self-knowledge
 - [ ] Tier 9 — Personality checkpoint against drift
