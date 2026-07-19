@@ -1,4 +1,5 @@
 import { loadIdentity } from "./identity.js";
+import { loadKnowledge } from "./knowledge.js";
 
 /**
  * Two-block prompt assembly.
@@ -17,9 +18,10 @@ import { loadIdentity } from "./identity.js";
 
 export function buildStableBlock(): string {
   const identity = loadIdentity();
+  const knowledge = loadKnowledge();
   const sections = [
     identity,
-    // Tier 3 will render knowledge/*.md here.
+    ...(knowledge ? [knowledge] : []),
     // Tier 8 will render the generated capability summary here.
   ];
   return sections.join("\n\n---\n\n");

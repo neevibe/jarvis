@@ -5,7 +5,8 @@
   "scripts": {
     "chat": "tsx src/index.ts",
     "verify:tier1": "tsx scripts/verify-tier1.ts",
-    "verify:tier2": "tsx scripts/verify-tier2.ts"
+    "verify:tier2": "tsx scripts/verify-tier2.ts",
+    "verify:tier3": "tsx scripts/verify-tier3.ts"
   },
   "keywords": [],
   "author": "",
