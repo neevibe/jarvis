@@ -1,0 +1,21 @@
+{
+  "name": "jarvis",
+  "version": "0.1.0",
+  "description": "Jarvis — a digital-twin agent with a durable identity and a real memory system, built on the Claude Agent SDK",
+  "scripts": {
+    "chat": "tsx src/index.ts",
+    "verify:tier1": "tsx scripts/verify-tier1.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.215"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}

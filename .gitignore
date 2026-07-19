@@ -1,0 +1,30 @@
+# ── Jarvis private zone — the brain's contents never leave this Mac ──
+# Identity, knowledge, memories, transcripts, and datasets are personal.
+# Only code, structure, and *.example templates are published.
+
+identity/*
+!identity/*.example.md
+
+knowledge/*
+!knowledge/*.example.md
+
+memory/*
+!memory/.gitkeep
+
+sessions/*
+!sessions/.gitkeep
+
+data/*
+!data/.gitkeep
+
+# ── Secrets ──
+.env
+.env.*
+*.pem
+*.key
+
+# ── Node ──
+node_modules/
+dist/
+*.log
+.DS_Store
