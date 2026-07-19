@@ -11,7 +11,8 @@
     "verify:tier5": "tsx scripts/verify-tier5.ts",
     "verify:tier6": "tsx scripts/verify-tier6.ts",
     "extract": "tsx scripts/extract.ts",
-    "verify:tier7": "tsx scripts/verify-tier7.ts teach && tsx scripts/verify-tier7.ts recall && tsx scripts/verify-tier7.ts extract && tsx scripts/verify-tier7.ts chatter && tsx scripts/verify-tier7.ts dedupe && tsx scripts/verify-tier7.ts forget && tsx scripts/verify-tier7.ts cleanup"
+    "verify:tier7": "tsx scripts/verify-tier7.ts teach && tsx scripts/verify-tier7.ts recall && tsx scripts/verify-tier7.ts extract && tsx scripts/verify-tier7.ts chatter && tsx scripts/verify-tier7.ts dedupe && tsx scripts/verify-tier7.ts forget && tsx scripts/verify-tier7.ts cleanup",
+    "verify:tier8": "tsx scripts/verify-tier8.ts"
   },
   "keywords": [],
   "author": "",

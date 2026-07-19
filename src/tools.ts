@@ -8,6 +8,20 @@ import {
 } from "./memory.js";
 import { recall } from "./recall.js";
 
+/**
+ * Single source of truth for tool metadata — the MCP server registers from
+ * this AND the self-knowledge block (Tier 8) is generated from it, so what
+ * Jarvis claims it can do cannot drift from what is actually registered.
+ */
+export const TOOL_SPECS = {
+  save_memory:
+    "Save a durable fact to long-term memory the moment it appears: decisions Neeraj makes (with their reasoning), corrections he gives, durable facts about him/his work/his people, preferences, references. The body must record the fact, why it matters, and how to apply it.",
+  recall_memory:
+    "Search long-term memory. Use when past decisions, preferences, people, or project context could be relevant to the current question.",
+  forget_memory:
+    "Delete a memory by id. Deletion is deliberate: first call returns what would be deleted; you must get Neeraj's explicit confirmation, then call again with confirmed: true.",
+} as const;
+
 /** Handlers are exported plain so verification can unit-test them. */
 
 export async function handleSave(args: {
@@ -52,7 +66,7 @@ export const memoryServer = createSdkMcpServer({
   tools: [
     tool(
       "save_memory",
-      "Save a durable fact to long-term memory the moment it appears: decisions Neeraj makes (with their reasoning), corrections he gives, durable facts about him/his work/his people, preferences, references. The body must record the fact, why it matters, and how to apply it.",
+      TOOL_SPECS.save_memory,
       {
         type: z.enum(MEMORY_TYPES).describe("What kind of memory this is"),
         hook: z.string().max(120).describe("One-line searchable summary"),
@@ -66,7 +80,7 @@ export const memoryServer = createSdkMcpServer({
     ),
     tool(
       "recall_memory",
-      "Search long-term memory. Use when past decisions, preferences, people, or project context could be relevant to the current question.",
+      TOOL_SPECS.recall_memory,
       {
         query: z.string().describe("What to look for"),
         type: z.enum(MEMORY_TYPES).optional().describe("Narrow to one type"),
@@ -77,7 +91,7 @@ export const memoryServer = createSdkMcpServer({
     ),
     tool(
       "forget_memory",
-      "Delete a memory by id. Deletion is deliberate: first call returns what would be deleted; you must get Neeraj's explicit confirmation, then call again with confirmed: true.",
+      TOOL_SPECS.forget_memory,
       {
         name: z.string().describe("Memory id (file name without .md)"),
         confirmed: z

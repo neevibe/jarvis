@@ -1,3 +1,4 @@
+import { buildCapabilities } from "./capabilities.js";
 import { loadIdentity } from "./identity.js";
 import { loadKnowledge } from "./knowledge.js";
 import { MEMORY_TYPES, listMemories } from "./memory.js";
@@ -57,7 +58,7 @@ export function buildStableBlock(): string {
     identity,
     ...(knowledge ? [knowledge] : []),
     renderMemoryIndex(),
-    // Tier 8 will render the generated capability summary here.
+    buildCapabilities(),
   ];
   return sections.join("\n\n---\n\n");
 }
